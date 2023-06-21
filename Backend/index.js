@@ -2,6 +2,7 @@ import app from "./server.js";
 import mongodb from "mongodb";
 // Importing database connection.
 import dotenv from "dotenv";
+import ExperienceDao from "./dao/experiencesDAO.js";
 
 // Setting up MongoDB connection.
 dotenv.config();
@@ -11,7 +12,7 @@ const port = process.env.PORT || 8000;
 // Connecting to MongoDB.
 MongoClient.connect(
   // Connecting to restaurant database.
-  process.env.RESTREVIEWS_DB_URI,
+  process.env.TRAVEL_DB_URI,
   {
     wtimeoutMS: 2500,
   }
@@ -27,7 +28,7 @@ MongoClient.connect(
     //After our database is connected we only then start our web server.
 
     // Connecting to all collections inside database.
-
+    ExperienceDao.injectDB(client);
     app.listen(port, () => {
       console.log(`listening on port ${port}`);
     });
