@@ -1,4 +1,7 @@
+import { json } from "express";
 import ExperiencesDAO from "../dao/experiencesDAO.js";
+
+import { ObjectId } from "mongodb";
 
 export default class ExperiencesCtrl {
   static async apiPostExperience(req, res, next) {
@@ -16,31 +19,119 @@ export default class ExperiencesCtrl {
       const experienceInfo = {
         description: req.body.location_id,
 
+        transportationMethods: req.body.transportationMethods,
         placesToVisit: req.body.placesToVisit,
         travelCost: req.body.travelCost,
         transportationCost: req.body.transportationCost,
         foodCost: req.body.foodCost,
       };
-      await ExperiencesDAO.addExperience(
+
+      const result = await ExperiencesDAO.postExperience(
         userInfo,
         locationInfo,
         experienceInfo
       );
-
-      res.json({ status: "success" });
+      res.json(result);
+      return result;
+      const _id = result.insertedId;
     } catch (e) {
       res.status(500).json({ error: e.message });
     }
   }
 
-  static async apiGetExperiences(req, res, next) {
+  static async apiGetAllExperiences(req, res, next) {
     try {
-      console.error("Here");
-      result = await ExperiencesDAO.getExperiences();
-      res.json(result);
-      res.json({ status: "success" });
+      const experiencesList = await ExperiencesDAO.getAllExperiences();
+      res.json(experiencesList);
     } catch (e) {
-      res.status(500).json({ error: e });
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiGetExperienceById(req, res, next) {
+    try {
+      const _id = req.body._id;
+      console.log(_id);
+      const experience = await ExperiencesDAO.getExperienceById(_id);
+      res.json(experience);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiGetExperienceId(req, res, next) {
+    try {
+      const userName = req.body.userName;
+      const user_id = req.body.user_id;
+      const locationName = req.body.locationName;
+      const location_id = req.body.location_id;
+      const _id = await ExperiencesDAO.getExperienceId(
+        userName,
+        user_id,
+        locationName,
+        location_id
+      );
+
+      if (_id != null) {
+        res.json({ _id: _id.toString() });
+        return _id;
+      } else res.json({ _id: null });
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiDeleteExperienceByDetail(req, res, next) {
+    try {
+      const userName = req.body.userName;
+      const user_id = req.body.user_id;
+      const locationName = req.body.locationName;
+      const location_id = req.body.location_id;
+      const status = await ExperiencesDAO.deleteExperienceByDetail(
+        userName,
+        user_id,
+        locationName,
+        location_id
+      );
+      res.json(status);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiDeleteExperienceById(req, res, next) {
+    try {
+      const _id = req.body._id;
+      const status = await ExperiencesDAO.deleteExperienceById(_id);
+      res.json(status);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiGetUserExperiencesById(req, res, next) {
+    try {
+      const user_id = req.body.user_id;
+      const result = await ExperiencesDAO.getUserExperiencesById(user_id);
+      res.json(result);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
+    }
+  }
+
+  static async apiGetLocationExperiencesById(req, res, next) {
+    try {
+      const location_id = req.body.location_id;
+      const result = await ExperiencesDAO.getLocationExperiencesById(
+        location_id
+      );
+      res.json(result);
+    } catch (e) {
+      res.status(500).json({ error: e.message });
     }
   }
 }
+
+// Filter on getting all experiences.
+// Get all experiences by location_id.
+// Get all experiences by user_id.

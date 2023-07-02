@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 
 // Route will be in a seperate file.
+console.log("Here")
 import travel from "./api/travel.route.js";
 
 // Creating express app that we will use to make our server.

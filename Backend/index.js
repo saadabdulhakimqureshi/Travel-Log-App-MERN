@@ -2,8 +2,8 @@ import app from "./server.js";
 import mongodb from "mongodb";
 // Importing database connection.
 import dotenv from "dotenv";
-import ExperienceDao from "./dao/experiencesDAO.js";
-
+import ExperiencesDAO from "./dao/experiencesDAO.js";
+import UsersDAO from "./dao/usersDAO.js";
 // Setting up MongoDB connection.
 dotenv.config();
 const MongoClient = mongodb.MongoClient;
@@ -28,7 +28,8 @@ MongoClient.connect(
     //After our database is connected we only then start our web server.
 
     // Connecting to all collections inside database.
-    ExperienceDao.injectDB(client);
+    ExperiencesDAO.injectDB(client);
+    UsersDAO.injectDB(client);
     app.listen(port, () => {
       console.log(`listening on port ${port}`);
     });
