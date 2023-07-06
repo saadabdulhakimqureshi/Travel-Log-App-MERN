@@ -41,7 +41,23 @@ export default class ExperiencesCtrl {
 
   static async apiGetAllExperiences(req, res, next) {
     try {
-      const experiencesList = await ExperiencesDAO.getAllExperiences();
+
+      let filters = {};
+      if (req.query.locationName) {
+        filters.locationName = req.query.locationName;
+      } 
+      if (req.query.travelCost) {
+        filters.travelCost = parseInt(req.query.travelCost);
+      } 
+      if (req.query.foodCost) {
+        filters.foodCost = parseInt(req.query.foodCost);
+      } 
+      if (req.query.transportationCost) {
+        filters.transportationCost = parseInt(req.query.transportationCost);
+      }
+      console.log(filters)
+      const experiencesList = await ExperiencesDAO.getAllExperiences(filters);
+
       res.json(experiencesList);
     } catch (e) {
       res.status(500).json({ error: e.message });

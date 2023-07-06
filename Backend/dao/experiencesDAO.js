@@ -24,7 +24,7 @@ export default class ExperiencesDAO {
       const experienceDoc = {
         date: new Date(),
         userName: userInfo.userName,
-        user_id : userInfo.user_id,
+        user_id: userInfo.user_id,
         email_id: userInfo.email_id,
         location_id: locationInfo.location_id,
         locationName: locationInfo.locationName,
@@ -44,10 +44,27 @@ export default class ExperiencesDAO {
     }
   }
 
-  static async getAllExperiences() {
+  static async getAllExperiences(filters) {
     try {
+      let query = {};
+
+      if (filters) {
+        if ("locationName" in filters) {
+          query.locationName = { $eq: filters.locationName };
+        }
+        if ("foodCost" in filters) {
+          query.foodCost = { $eq: filters.foodCost };
+        }
+        if ("travelCost" in filters) {
+          query.travelCost = { $eq: filters.travelCost };
+        }
+        if ("transportationCost" in filters) {
+          query.transportationCost = { $eq: filters.transportationCost };
+        }
+      }
+
       console.log("Accessing records.");
-      const cursor = await experiences.find();
+      const cursor = await experiences.find(query);
 
       if ((await cursor.count()) == 0) {
         console.log("Records not found.");
